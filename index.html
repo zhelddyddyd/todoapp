@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Todo</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Todo App</h1>
+        <input type="text"
+            v-model="inputText"
+            v-on:keyup.enter="addItem">
+            <button v-on:click="fetchItems">add</button>
+        <div>
+            <ul>
+                <li v-for="(todoItem, index) in todoItems">
+                    {{ todoItem }}
+                    <button v-on:click="removeItem(todoItem, index)">
+                        remove
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                inputText: '',
+                todoItems: []
+            },
+            methods: {
+                addItem: function(event){
+                    console.log(event);
+                    var value = this.inputText;
+                    localStorage.setItem(value, value);
+                    this.inputText = '';
+                    this.todoItems.push(value);
+                    //JSON.parse()
+                    //JSON.stringify
+                    // $.ajax({
+                    //     type: 'POST'
+                    // })
+                    // axios.post('주소', this.inputText);
+                },
+                fetchItems: function(){
+                    //axios.get('/todos') ...
+                    for(var i = 0 ; i < localStorage.length; i++){
+                        var value = localStorage.key(i);
+                        console.log(value);
+                        //console.log(this);
+                        this.todoItems.push(value);
+                    }
+                },
+                removeItem: function(todoItem, index){
+                    console.log(todoItem, index);
+                    this.todoItems.splice(index, 1);
+                    localStorage.removeItem(todoItem);
+                    //axios.delete('todo' + index)
+                }
+            },
+            created: function(){
+                this.fetchItems(); // 화면 created 시점에 fetch 함수 실행
+            }
+        })
+    </script>
+</body>
+</html>
